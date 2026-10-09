@@ -241,207 +241,67 @@ CREATE TABLE Tramite (
     FOREIGN KEY (IdContrato) REFERENCES ContratoCompraventa(IdContrato)
 );
 GO
---Ingreso de datos:
-
-INSERT INTO ColegioNotarios (NombreColegio, Departamento, Direccion, Telefono, Correo) VALUES
-('Colegio de Notarios de Cajamarca', 'Cajamarca', 'Jr. Amazonas 450', '076221100', 'contacto@cnc.pe'),
-('Colegio de Notarios de Lima', 'Lima', 'Av. Javier Prado 1200', '014452200', 'contacto@cnl.pe'),
-('Colegio de Notarios de La Libertad', 'La Libertad', 'Av. España 780', '044295300', 'contacto@cnll.pe');
+CREATE TABLE LibroKardex (
+    IdLibroKardex INT PRIMARY KEY IDENTITY(1,1),
+    NumeroLibro INT NOT NULL,
+    Anio INT NOT NULL,
+    IdNotario INT NOT NULL,
+    FolioInicio INT NOT NULL,
+    FolioFin INT NOT NULL,
+    Estado VARCHAR(20) DEFAULT 'Abierto' CHECK (Estado IN ('Abierto', 'Cerrado')),
+    FOREIGN KEY (IdNotario) REFERENCES Notario(IdNotario)
+);
 GO
 
-INSERT INTO Notario (Nombres, Apellidos, NumeroColegiatura, IdColegioNotarios, DistritoNotarial, DireccionOficina, Telefono, Correo, FechaNombramiento, Estado) VALUES
-('Carlos', 'Vasquez Rojas', 'CAJ-0125', 1, 'Cajamarca', 'Jr. Cruz de Piedra 320', '976123456', 'cvasquez@notaria.pe', '2015-03-10', 'Activo'),
-('Maria', 'Delgado Torres', 'LIM-0891', 2, 'Miraflores', 'Av. Larco 940', '987654321', 'mdelgado@notaria.pe', '2012-07-22', 'Activo'),
-('Jorge', 'Huaman Castro', 'TRU-0342', 3, 'Trujillo', 'Jr. Pizarro 560', '944556677', 'jhuaman@notaria.pe', '2018-01-15', 'Activo');
+ALTER TABLE EscrituraPublica
+ADD IdLibroKardex INT NULL
+CONSTRAINT FK_EscrituraPublica_LibroKardex FOREIGN KEY REFERENCES LibroKardex(IdLibroKardex);
 GO
 
-INSERT INTO Empleado (Nombres, Apellidos, DNI, Cargo, IdNotario, FechaIngreso, Telefono, Correo, Sueldo, Estado) VALUES
-('Lucia', 'Ramos Diaz', '45123456', 'Secretaria', 1, '2020-02-01', '976111222', 'lramos@notaria.pe', 1800.00, 'Activo'),
-('Pedro', 'Salazar Nunez', '46234567', 'Asistente Legal', 1, '2021-05-10', '976222333', 'psalazar@notaria.pe', 2200.00, 'Activo'),
-('Andrea', 'Flores Vega', '47345678', 'Cajera', 2, '2019-09-15', '987222333', 'aflores@notaria.pe', 1700.00, 'Activo');
+CREATE TABLE Pago (
+    IdPago INT PRIMARY KEY IDENTITY(1,1),
+    IdTramite INT NOT NULL,
+    FechaPago DATE NOT NULL,
+    Monto DECIMAL(10,2) NOT NULL,
+    MetodoPago VARCHAR(20) NOT NULL CHECK (MetodoPago IN ('Efectivo', 'Yape', 'Transferencia', 'Tarjeta')),
+    NumeroComprobante VARCHAR(30) NOT NULL UNIQUE,
+    Estado VARCHAR(20) DEFAULT 'Pagado' CHECK (Estado IN ('Pagado', 'Pendiente', 'Anulado')),
+    FOREIGN KEY (IdTramite) REFERENCES Tramite(IdTramite)
+);
 GO
 
-INSERT INTO Cliente (TipoPersona, TipoDocumento, NumeroDocumento, Nombres, Apellidos, RazonSocial, EstadoCivil, Direccion, Telefono, Correo) VALUES
-('Natural', 'DNI', '70123456', 'Miguel', 'Torres Leon', NULL, 'Soltero', 'Jr. Lima 234, Cajamarca', '965111222', 'mtorres@gmail.com'),
-('Natural', 'DNI', '71234567', 'Rosa', 'Vargas Mendez', NULL, 'Casado', 'Av. Hoyos Rubio 120, Cajamarca', '965222333', 'rvargas@gmail.com'),
-('Natural', 'DNI', '72345678', 'Fernando', 'Castillo Rios', NULL, 'Soltero', 'Jr. Junin 88, Cajamarca', '965333444', 'fcastillo@gmail.com'),
-('Juridica', 'RUC', '20481234567', NULL, NULL, 'Transportes San Martin SAC', NULL, 'Av. Industrial 500, Cajamarca', '965444555', 'contacto@tsm.pe'),
-('Natural', 'DNI', '73456789', 'Elena', 'Quispe Ortiz', NULL, 'Viudo', 'Jr. Amalia Puga 210, Cajamarca', '965555666', 'equispe@gmail.com'),
-('Natural', 'DNI', '74567890', 'Ricardo', 'Munoz Silva', NULL, 'Casado', 'Av. Atahualpa 340, Cajamarca', '965666777', 'rmunoz@gmail.com');
+CREATE TABLE LegalizacionFirma (
+    IdLegalizacion INT PRIMARY KEY IDENTITY(1,1),
+    IdCliente INT NOT NULL,
+    IdNotario INT NOT NULL,
+    TipoDocumento VARCHAR(100) NOT NULL,
+    CantidadFirmas INT NOT NULL,
+    FechaLegalizacion DATE NOT NULL,
+    Costo DECIMAL(8,2) NOT NULL,
+    FOREIGN KEY (IdCliente) REFERENCES Cliente(IdCliente),
+    FOREIGN KEY (IdNotario) REFERENCES Notario(IdNotario)
+);
 GO
 
-INSERT INTO Arancel (NombreArancel, Descripcion, Monto, Estado) VALUES
-('Arancel Escritura Compraventa', 'Tarifa por escritura de compraventa', 350.00, 'Activo'),
-('Arancel Poder General', 'Tarifa por otorgamiento de poder general', 180.00, 'Activo'),
-('Arancel Testamento', 'Tarifa por testamento por escritura publica', 420.00, 'Activo');
+ALTER TABLE Tramite
+ADD IdLegalizacion INT NULL
+CONSTRAINT FK_Tramite_LegalizacionFirma FOREIGN KEY REFERENCES LegalizacionFirma(IdLegalizacion);
 GO
 
-INSERT INTO TipoTramite (NombreTramite, Descripcion, RequiereTestigos, CostoBase, TiempoEstimadoDias) VALUES
-('Compraventa', 'Transferencia de bien inmueble o vehicular', 0, 350.00, 5),
-('Poder', 'Otorgamiento de poder notarial', 0, 180.00, 2),
-('Testamento', 'Testamento por escritura publica', 1, 420.00, 3);
+CREATE TABLE Hipoteca (
+    IdHipoteca INT PRIMARY KEY IDENTITY(1,1),
+    IdEscritura INT NOT NULL,
+    IdInmueble INT NOT NULL,
+    IdDeudor INT NOT NULL,
+    IdAcreedor INT NOT NULL,
+    MontoGarantia DECIMAL(12,2) NOT NULL,
+    Moneda VARCHAR(5) NOT NULL CHECK (Moneda IN ('PEN', 'USD')),
+    FechaInscripcion DATE,
+    Estado VARCHAR(20) DEFAULT 'Vigente' CHECK (Estado IN ('Vigente', 'Cancelada', 'En Ejecucion')),
+    FOREIGN KEY (IdEscritura) REFERENCES EscrituraPublica(IdEscritura),
+    FOREIGN KEY (IdInmueble) REFERENCES Inmueble(IdInmueble),
+    FOREIGN KEY (IdDeudor) REFERENCES Cliente(IdCliente),
+    FOREIGN KEY (IdAcreedor) REFERENCES Cliente(IdCliente)
+);
 GO
 
-INSERT INTO EscrituraPublica (NumeroEscritura, KardexNo, TipoActo, FechaEscritura, Tomo, Folio, IdNotario, IdColegioNotarios, IdArancel, Estado) VALUES
-(1001, 'KDX-2026-001', 'Compraventa', '2026-01-15', 12, 145, 1, 1, 1, 'Vigente'),
-(1002, 'KDX-2026-002', 'Poder', '2026-02-03', 12, 150, 1, 1, 2, 'Vigente'),
-(1003, 'KDX-2026-003', 'Testamento', '2026-03-20', 13, 12, 2, 2, 3, 'Vigente');
-GO
-
-INSERT INTO Testigo (DNI, Nombres, Apellidos, Direccion, Telefono) VALUES
-('80123456', 'Julio', 'Paredes Soto', 'Jr. Tarapaca 100, Cajamarca', '966111222'),
-('81234567', 'Carmen', 'Rojas Vidal', 'Av. Mario Urteaga 210, Cajamarca', '966222333'),
-('82345678', 'Wilson', 'Tafur Diaz', 'Jr. Dos de Mayo 55, Cajamarca', '966333444');
-GO
-
-INSERT INTO EscrituraTestigo (IdEscritura, IdTestigo) VALUES
-(3, 1),
-(3, 2),
-(1, 3);
-GO
-
-INSERT INTO CopiaCertificada (IdEscritura, TipoCopia, CantidadCopias, FechaSolicitud, Observacion) VALUES
-(1, 'Copia Simple', 2, '2026-01-16', 'Solicitada por el comprador'),
-(2, 'Copia Certificada', 1, '2026-02-04', 'Para tramite bancario'),
-(3, 'Copia Certificada', 3, '2026-03-21', 'Para herederos');
-GO
-
-INSERT INTO Inmueble (TipoInmueble, Direccion, Distrito, PartidaRegistral, AreaMetrosCuadrados) VALUES
-('Casa', 'Jr. Sucre 450', 'Cajamarca', 'PRT-11004521', 180.50),
-('Departamento', 'Av. Hoyos Rubio 220, Dpto 302', 'Cajamarca', 'PRT-11004890', 95.00),
-('Terreno', 'Sector Chontapaccha s/n', 'Baños del Inca', 'PRT-11005120', 500.00);
-GO
-
-INSERT INTO Vehiculo (Placa, Marca, Modelo, AnioFabricacion, NumeroTarjetaPropiedad) VALUES
-('ABC-123', 'Toyota', 'Hilux', 2019, 'TP-778899'),
-('XYZ-789', 'Hyundai', 'Accent', 2021, 'TP-664532'),
-('QRS-456', 'Nissan', 'Sentra', 2020, 'TP-991122');
-GO
-
-INSERT INTO ContratoCompraventa (IdEscritura, FechaContrato, IdInmueble, IdVehiculo, IdVendedor, IdComprador, PrecioVenta, FormaPago) VALUES
-(1, '2026-01-15', 1, NULL, 5, 1, 145000.00, 'Contado'),
-(1, '2026-01-15', NULL, 1, 6, 2, 62000.00, 'Financiado'),
-(1, '2026-01-15', 2, NULL, 5, 3, 98000.00, 'Contado');
-GO
-
-INSERT INTO Poder (IdEscritura, TipoPoder, IdOtorgante, IdApoderado, Facultades, FechaOtorgamiento, FolioInicio, FolioFin, Estado) VALUES
-(2, 'Poder General', 1, 2, 'Administrar bienes, representar en tramites bancarios y judiciales', '2026-02-03', 150, 152, 'Vigente'),
-(2, 'Poder Especial', 3, 4, 'Vender un vehiculo especifico placa ABC-123', '2026-02-03', 153, 154, 'Vigente'),
-(2, 'Poder General', 5, 6, 'Representacion en tramites municipales', '2026-02-03', 155, 157, 'Vigente');
-GO
-
-INSERT INTO Testamento (IdEscritura, TipoTestamento, IdTestador, IdTestigo1, IdTestigo2, FechaOtorga, HoraOtorga, Tomo, Folio, Estado) VALUES
-(3, 'Escritura Publica', 5, 1, 2, '2026-03-20', '10:30:00', 13, 12, 'Registrado'),
-(3, 'Escritura Publica', 6, 2, 3, '2026-03-20', '11:15:00', 13, 13, 'Registrado'),
-(3, 'Cerrado', 3, 1, 3, '2026-03-20', '12:00:00', 13, 14, 'Registrado');
-GO
-
-INSERT INTO PartidaRegistral (NumeroPartida, OficinaRegistral, Registro, Asiento, IdCliente, DescripcionActo, FechaInscripcion, EstadoTramite) VALUES
-('11004521', 'SUNARP Cajamarca', 'Registro de Propiedad Inmueble', 'A0003', 1, 'Compraventa de inmueble', '2026-01-20', 'Inscrito'),
-('11004890', 'SUNARP Cajamarca', 'Registro de Propiedad Inmueble', 'A0002', 3, 'Compraventa de inmueble', '2026-01-22', 'Inscrito'),
-('TP-778899', 'SUNARP Cajamarca', 'Registro de Propiedad Vehicular', 'A0001', 2, 'Transferencia vehicular', NULL, 'En Tramite');
-GO
-
-INSERT INTO Tramite (IdCliente, IdEmpleado, IdTipoTramite, IdEscritura, IdCopiaCertificada, IdPartidaRegistral, IdContrato, FechaInicio, FechaFin, EstadoTramite) VALUES
-(1, 1, 1, 1, 1, 1, 1, '2026-01-14', '2026-01-20', 'Finalizado'),
-(1, 2, 2, 2, 2, NULL, NULL, '2026-02-02', NULL, 'En Proceso'),
-(5, 3, 3, 3, 3, NULL, NULL, '2026-03-19', '2026-03-21', 'Finalizado');
-GO
-
---Vistas:
-CREATE VIEW VistaTramitesActivos AS
-SELECT
-    t.IdTramite,
-    c.IdCliente,
-    ISNULL(c.RazonSocial, c.Nombres + ' ' + c.Apellidos) AS Cliente,
-    e.Nombres + ' ' + e.Apellidos AS Empleado,
-    tt.NombreTramite,
-    t.FechaInicio,
-    t.EstadoTramite
-FROM Tramite t
-JOIN Cliente c ON c.IdCliente = t.IdCliente
-LEFT JOIN Empleado e ON e.IdEmpleado = t.IdEmpleado
-JOIN TipoTramite tt ON tt.IdTipoTramite = t.IdTipoTramite
-WHERE t.EstadoTramite = 'En Proceso';
-GO
- 
-CREATE VIEW VistaEscrituraDetalle AS
-SELECT
-    ep.IdEscritura,
-    ep.NumeroEscritura,
-    ep.KardexNo,
-    ep.TipoActo,
-    ep.FechaEscritura,
-    n.Nombres + ' ' + n.Apellidos AS Notario,
-    cn.NombreColegio,
-    a.NombreArancel,
-    a.Monto,
-    ep.Estado
-FROM EscrituraPublica ep
-JOIN Notario n ON n.IdNotario = ep.IdNotario
-JOIN ColegioNotarios cn ON cn.IdColegioNotarios = ep.IdColegioNotarios
-JOIN Arancel a ON a.IdArancel = ep.IdArancel;
-GO
- 
-CREATE VIEW VistaPoderesVigentes AS
-SELECT
-    p.IdPoder,
-    ep.KardexNo,
-    p.TipoPoder,
-    ot.Nombres + ' ' + ot.Apellidos AS Otorgante,
-    ap.Nombres + ' ' + ap.Apellidos AS Apoderado,
-    p.FechaOtorgamiento,
-    p.Estado
-FROM Poder p
-JOIN EscrituraPublica ep ON ep.IdEscritura = p.IdEscritura
-JOIN Cliente ot ON ot.IdCliente = p.IdOtorgante
-JOIN Cliente ap ON ap.IdCliente = p.IdApoderado
-WHERE p.Estado = 'Vigente';
-GO
- 
-CREATE VIEW VistaTestamentosRegistrados AS
-SELECT
-    tm.IdTestamento,
-    ep.KardexNo,
-    tm.TipoTestamento,
-    cl.Nombres + ' ' + cl.Apellidos AS Testador,
-    t1.Nombres + ' ' + t1.Apellidos AS Testigo1,
-    t2.Nombres + ' ' + t2.Apellidos AS Testigo2,
-    tm.FechaOtorga,
-    tm.Estado
-FROM Testamento tm
-JOIN EscrituraPublica ep ON ep.IdEscritura = tm.IdEscritura
-JOIN Cliente cl ON cl.IdCliente = tm.IdTestador
-JOIN Testigo t1 ON t1.IdTestigo = tm.IdTestigo1
-JOIN Testigo t2 ON t2.IdTestigo = tm.IdTestigo2;
-GO
- 
-CREATE VIEW VistaContratosCompraventa AS
-SELECT
-    cc.IdContrato,
-    ep.KardexNo,
-    cc.FechaContrato,
-    CASE WHEN cc.IdInmueble IS NOT NULL THEN 'Inmueble' ELSE 'Vehiculo' END AS TipoBien,
-    ISNULL(i.Direccion, v.Placa) AS DetalleBien,
-    ve.Nombres + ' ' + ve.Apellidos AS Vendedor,
-    co.Nombres + ' ' + co.Apellidos AS Comprador,
-    cc.PrecioVenta,
-    cc.FormaPago
-FROM ContratoCompraventa cc
-JOIN EscrituraPublica ep ON ep.IdEscritura = cc.IdEscritura
-LEFT JOIN Inmueble i ON i.IdInmueble = cc.IdInmueble
-LEFT JOIN Vehiculo v ON v.IdVehiculo = cc.IdVehiculo
-JOIN Cliente ve ON ve.IdCliente = cc.IdVendedor
-JOIN Cliente co ON co.IdCliente = cc.IdComprador;
-GO
- 
-CREATE VIEW VistaCargaEmpleados AS
-SELECT
-    e.IdEmpleado,
-    e.Nombres + ' ' + e.Apellidos AS Empleado,
-    e.Cargo,
-    COUNT(t.IdTramite) AS TotalTramites
-FROM Empleado e
-LEFT JOIN Tramite t ON t.IdEmpleado = e.IdEmpleado
-GROUP BY e.IdEmpleado, e.Nombres, e.Apellidos, e.Cargo;
-GO
