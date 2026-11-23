@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notaría Lozano · Panel de gestión</title>
+  <meta name="description" content="Dashboard animado de la Notaría Lozano (junio a noviembre de 2026)">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <div class="fondo" aria-hidden="true">
+    <div class="mancha m1"></div><div class="mancha m2"></div><div class="mancha m3"></div><div class="mancha m4"></div>
+  </div>
+
+  <div class="app">
+    <aside class="lateral vidrio" aria-label="Navegación">
+      <div class="logo"><img src="logo.png" alt="Notaría Lozano"></div>
+      <div class="seccion-titulo">Panel de gestión</div>
+      <nav class="nav"></nav>
+      <div class="pie">
+        <b>NOTARÍA LOZANO</b>
+        <span class="punto-vivo" aria-hidden="true"></span>Datos al 22/11/2026<br>
+        Fuente: DW_NotariaLozano
+      </div>
+    </aside>
+
+    <main class="principal">
+      <header class="cabecera vidrio">
+        <div class="titulos">
+          <div class="miga">Notaría Lozano / Inteligencia de gestión</div>
+          <h1>Resumen ejecutivo</h1>
+          <p></p>
+        </div>
+        <span class="chip" id="periodo"></span>
+      </header>
+
+      <section class="filtros vidrio" aria-label="Filtros"></section>
+      <div class="activos" aria-live="polite"></div>
+
+      <div class="vista">
+        <div class="rejilla"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="datos.js" charset="utf-8"></script>
+  <script src="calculos.js"></script>
+  <script src="graficos.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
