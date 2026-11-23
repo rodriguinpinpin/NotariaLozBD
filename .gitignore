@@ -1,0 +1,11 @@
+# Carpetas internas de herramientas de desarrollo (no son parte del proyecto)
+.claude/
+.superpowers/
+
+# Cache de Python
+__pycache__/
+*.pyc
+
+# Archivos temporales de Office al tener un documento abierto
+~$*.docx
+~$*.pbix
