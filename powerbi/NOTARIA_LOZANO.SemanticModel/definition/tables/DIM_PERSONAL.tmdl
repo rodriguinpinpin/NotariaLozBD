@@ -1,0 +1,39 @@
+table DIM_PERSONAL
+	lineageTag: a90d6283-9af6-4588-9399-3926a4204483
+
+	column ID_Personal
+		dataType: int64
+		formatString: 0
+		lineageTag: 7c0e136e-56a2-493e-a500-6c8b4d1b43ea
+		summarizeBy: none
+		sourceColumn: ID_Personal
+
+	column Nombre_Completo
+		dataType: string
+		lineageTag: 71236b1c-1342-41d1-b337-4212e0dd9a33
+		summarizeBy: none
+		sourceColumn: Nombre_Completo
+
+	column Cargo
+		dataType: string
+		lineageTag: f2421a72-1d44-4ba3-9208-5ef3cbc304da
+		summarizeBy: none
+		sourceColumn: Cargo
+
+	column Area
+		dataType: string
+		lineageTag: 7efec248-8b7b-4703-a6bd-f674bca3bb06
+		summarizeBy: none
+		sourceColumn: Area
+
+	partition DIM_PERSONAL = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("localhost\SQLEXPRESS", "DW_NotariaLozano"),
+				    Datos = Origen{[Schema = "dbo", Item = "DIM_PERSONAL"]}[Data]
+				in
+				    Datos
+
+	annotation PBI_ResultType = Table
+

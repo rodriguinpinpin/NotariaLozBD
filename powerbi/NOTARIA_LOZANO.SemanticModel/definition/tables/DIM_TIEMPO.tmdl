@@ -1,0 +1,167 @@
+table DIM_TIEMPO
+	lineageTag: 0c8ffae9-6a38-4b9a-8f72-b332332dc3c6
+	dataCategory: Time
+
+	column ID_Tiempo
+		dataType: int64
+		formatString: 0
+		lineageTag: e43e0faf-9486-497a-9486-a83f49e47bce
+		summarizeBy: none
+		sourceColumn: ID_Tiempo
+
+	column Fecha_Exacta
+		dataType: dateTime
+		isKey
+		formatString: dd/mm/yyyy
+		lineageTag: f02f5575-45a4-4ad5-a979-04509e292334
+		summarizeBy: none
+		sourceColumn: Fecha_Exacta
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Mes
+		dataType: int64
+		formatString: 0
+		lineageTag: 20ba0e41-6140-4d56-baca-291b6425be56
+		summarizeBy: none
+		sourceColumn: Mes
+
+	column Nombre_Mes
+		dataType: string
+		lineageTag: 9ed0b9d9-a09e-4660-bf04-1fdb19a95b04
+		summarizeBy: none
+		sourceColumn: Nombre_Mes
+		sortByColumn: Mes
+
+	column Trimestre
+		dataType: int64
+		formatString: 0
+		lineageTag: 9a62cf69-4c96-4fd6-ac54-10cd61ad08f8
+		summarizeBy: none
+		sourceColumn: Trimestre
+
+	column Semestre
+		dataType: int64
+		formatString: 0
+		lineageTag: 2ff1dc7f-0352-4d13-ac8f-e7dc045ec2e8
+		summarizeBy: none
+		sourceColumn: Semestre
+
+	column Anio
+		dataType: int64
+		formatString: 0
+		lineageTag: 97951bc3-088e-44c7-bf59-9f4b34ea57af
+		summarizeBy: none
+		sourceColumn: Anio
+
+	column Dia
+		dataType: int64
+		formatString: 0
+		lineageTag: 0841b832-079f-45e7-93ab-3660e78df006
+		summarizeBy: none
+		sourceColumn: Dia
+
+	column Nombre_Dia
+		dataType: string
+		lineageTag: a82757bb-6fc8-4b78-9b56-f5b6cb453096
+		summarizeBy: none
+		sourceColumn: Nombre_Dia
+		sortByColumn: Dia_Semana
+
+	column Dia_Semana
+		dataType: int64
+		formatString: 0
+		lineageTag: ab5d14ff-fa24-4356-b0f7-6f9b663539a6
+		summarizeBy: none
+		sourceColumn: Dia_Semana
+
+	column Semana
+		dataType: int64
+		formatString: 0
+		lineageTag: 7ba763ca-a46e-4f52-91ee-953dcd3f72e1
+		summarizeBy: none
+		sourceColumn: Semana
+
+	column Es_Fin_De_Mes
+		dataType: boolean
+		lineageTag: fd0d617a-b122-4b36-9285-2858ed3e3ba9
+		summarizeBy: none
+		sourceColumn: Es_Fin_De_Mes
+
+	column Es_Dia_Habil
+		dataType: boolean
+		lineageTag: 9d7fdea4-35f0-487c-97ef-5052e886e0b1
+		summarizeBy: none
+		sourceColumn: Es_Dia_Habil
+
+	column Anio_Mes
+		dataType: string
+		lineageTag: 7300bc77-0699-4e33-829a-dfff4f0680d1
+		summarizeBy: none
+		sourceColumn: Anio_Mes
+		sortByColumn: Orden_Mes
+
+	column Orden_Mes
+		dataType: int64
+		formatString: 0
+		lineageTag: d4bb63df-1b67-471c-aaef-efa03cbf148a
+		summarizeBy: none
+		sourceColumn: Orden_Mes
+
+	column Mes_Corto
+		dataType: string
+		lineageTag: 54d34641-ba68-47a1-aa2a-091b6815d3b5
+		summarizeBy: none
+		sourceColumn: Mes_Corto
+		sortByColumn: Mes
+
+	column Trimestre_Texto
+		dataType: string
+		lineageTag: 60dcae41-583c-4f55-82a6-c0ce74146003
+		summarizeBy: none
+		sourceColumn: Trimestre_Texto
+		sortByColumn: Trimestre
+
+	column Mes_Etiqueta
+		dataType: string
+		lineageTag: 3a527b8f-3567-49e7-92de-eb7b03915027
+		summarizeBy: none
+		sourceColumn: Mes_Etiqueta
+		sortByColumn: Orden_Mes
+
+	column Mes_Completo
+		dataType: boolean
+		lineageTag: 96cfca32-d6fa-457f-91d6-b909643439b1
+		summarizeBy: none
+		sourceColumn: Mes_Completo
+
+	hierarchy 'Jerarquía de fechas'
+		lineageTag: c45c06c5-01be-4392-b7d5-5b919d7e61b7
+
+		level Año
+			lineageTag: cc1ad8c5-f2d0-450a-891c-12655a26e754
+			column: Anio
+
+		level Trimestre
+			lineageTag: 1495f337-ae4c-4392-a956-f56103186e23
+			column: Trimestre_Texto
+
+		level Mes
+			lineageTag: 523ff048-485c-44c3-b40c-61bfb37f5ce8
+			column: Nombre_Mes
+
+		level Día
+			lineageTag: ed6a4641-a0cb-43fa-b8f9-34e090ab2f04
+			column: Dia
+
+	partition DIM_TIEMPO = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("localhost\SQLEXPRESS", "DW_NotariaLozano"),
+				    Datos = Origen{[Schema = "dbo", Item = "DIM_TIEMPO"]}[Data]
+				in
+				    Datos
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "NOTARIA_LOZANO"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "17880e73-919c-46ea-b992-08df4fd9f7f1"
+  }
+}

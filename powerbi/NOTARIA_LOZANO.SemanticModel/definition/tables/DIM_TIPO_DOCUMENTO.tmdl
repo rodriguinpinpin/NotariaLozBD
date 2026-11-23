@@ -1,0 +1,33 @@
+table DIM_TIPO_DOCUMENTO
+	lineageTag: 0dddfd4c-fc6f-4a33-8d99-8a4fa182d35d
+
+	column ID_TipoDocumento
+		dataType: int64
+		formatString: 0
+		lineageTag: bb4ea259-444a-4362-adc2-1aefaed017ed
+		summarizeBy: none
+		sourceColumn: ID_TipoDocumento
+
+	column Nombre_TipoDocumento
+		dataType: string
+		lineageTag: e488c48d-784f-4d0f-b13f-69fea1f9367c
+		summarizeBy: none
+		sourceColumn: Nombre_TipoDocumento
+
+	column Descripcion
+		dataType: string
+		lineageTag: ff969bf2-5091-433f-8dad-54cb9c600182
+		summarizeBy: none
+		sourceColumn: Descripcion
+
+	partition DIM_TIPO_DOCUMENTO = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("localhost\SQLEXPRESS", "DW_NotariaLozano"),
+				    Datos = Origen{[Schema = "dbo", Item = "DIM_TIPO_DOCUMENTO"]}[Data]
+				in
+				    Datos
+
+	annotation PBI_ResultType = Table
+

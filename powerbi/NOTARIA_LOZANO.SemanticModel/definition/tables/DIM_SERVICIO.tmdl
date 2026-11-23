@@ -1,0 +1,39 @@
+table DIM_SERVICIO
+	lineageTag: 58536fbe-d3bb-4872-a7a5-0492490137ad
+
+	column ID_Servicio
+		dataType: int64
+		formatString: 0
+		lineageTag: ecca2c7d-0d2b-487c-b153-1400d41eacaa
+		summarizeBy: none
+		sourceColumn: ID_Servicio
+
+	column Nombre_Tramite
+		dataType: string
+		lineageTag: b38605ef-a883-4e41-a34c-5cd94d8fe4dc
+		summarizeBy: none
+		sourceColumn: Nombre_Tramite
+
+	column Categoria
+		dataType: string
+		lineageTag: 47ab8973-8529-445f-b286-6a94414b9376
+		summarizeBy: none
+		sourceColumn: Categoria
+
+	column Descripcion
+		dataType: string
+		lineageTag: 7159ad90-0ea1-427b-bdd4-89d59755209d
+		summarizeBy: none
+		sourceColumn: Descripcion
+
+	partition DIM_SERVICIO = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("localhost\SQLEXPRESS", "DW_NotariaLozano"),
+				    Datos = Origen{[Schema = "dbo", Item = "DIM_SERVICIO"]}[Data]
+				in
+				    Datos
+
+	annotation PBI_ResultType = Table
+

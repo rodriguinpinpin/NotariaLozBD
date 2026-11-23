@@ -1,0 +1,32 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["DIM_CLIENTE","DIM_ESTADO_PAGO","DIM_ETAPA_TRAMITE","DIM_METODO_PAGO","DIM_NOTARIO","DIM_PERSONAL","DIM_SERVICIO","DIM_TIEMPO","DIM_TIPO_DOCUMENTO","DIM_TURNO","FACT_DOCUMENTOS_OTORGADOS","FACT_TIEMPOS_ATENCION","FACT_TRAMITES_FINANCIEROS","FACT_TRAMITE_GENERAL","_Medidas"]
+
+annotation PBI_ProTooling = ["DaxQueryView_Desktop","DevMode"]
+
+ref table DIM_CLIENTE
+ref table DIM_ESTADO_PAGO
+ref table DIM_ETAPA_TRAMITE
+ref table DIM_METODO_PAGO
+ref table DIM_NOTARIO
+ref table DIM_PERSONAL
+ref table DIM_SERVICIO
+ref table DIM_TIEMPO
+ref table DIM_TIPO_DOCUMENTO
+ref table DIM_TURNO
+ref table FACT_DOCUMENTOS_OTORGADOS
+ref table FACT_TIEMPOS_ATENCION
+ref table FACT_TRAMITES_FINANCIEROS
+ref table FACT_TRAMITE_GENERAL
+ref table _Medidas
+
+ref cultureInfo es-ES
+

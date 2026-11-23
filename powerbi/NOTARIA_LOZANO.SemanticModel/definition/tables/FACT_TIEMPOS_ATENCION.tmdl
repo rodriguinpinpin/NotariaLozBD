@@ -1,0 +1,99 @@
+table FACT_TIEMPOS_ATENCION
+	lineageTag: 0ed09cfe-efbe-49fc-b0b8-862bdb1331c6
+
+	column ID_Servicio
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 76e17d58-69e2-4401-b7dc-870ad9d9afd2
+		summarizeBy: none
+		sourceColumn: ID_Servicio
+
+	column ID_Personal
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 94af2f22-c006-4789-8371-921c516e52e9
+		summarizeBy: none
+		sourceColumn: ID_Personal
+
+	column ID_Tiempo
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e91673ed-f3cc-451b-8872-0a99beb1d9ea
+		summarizeBy: none
+		sourceColumn: ID_Tiempo
+
+	column ID_Etapa
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0612aff0-3461-476b-889a-df351579a6dc
+		summarizeBy: none
+		sourceColumn: ID_Etapa
+
+	column ID_Turno
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 031b4b59-cef8-4981-ae71-2737144c4261
+		summarizeBy: none
+		sourceColumn: ID_Turno
+
+	column Minutos_Espera
+		dataType: int64
+		formatString: 0
+		lineageTag: 0e596920-2a28-4a7f-a329-f420353c3b60
+		summarizeBy: none
+		sourceColumn: Minutos_Espera
+
+	column Minutos_Proceso
+		dataType: int64
+		formatString: 0
+		lineageTag: eda0099b-080c-49be-96e6-0514387151e7
+		summarizeBy: none
+		sourceColumn: Minutos_Proceso
+
+	column Minutos_Totales
+		dataType: int64
+		formatString: 0
+		lineageTag: b41b0c26-8c7b-4370-95f6-fc8c1e8d210d
+		summarizeBy: none
+		sourceColumn: Minutos_Totales
+
+	column Nro_Tramite
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 64ca0b63-676c-4254-b02c-dbdc0c500367
+		summarizeBy: none
+		sourceColumn: Nro_Tramite
+
+	column ID_Cliente
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c7d4bbf3-15fa-48ed-a9c6-c1bc51893cfb
+		summarizeBy: none
+		sourceColumn: ID_Cliente
+
+	column ID_Notario
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b8ad1b4d-6836-4ef4-a5f2-84a3a9bb7764
+		summarizeBy: none
+		sourceColumn: ID_Notario
+
+	partition FACT_TIEMPOS_ATENCION = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("localhost\SQLEXPRESS", "DW_NotariaLozano"),
+				    Datos = Origen{[Schema = "dbo", Item = "FACT_TIEMPOS_ATENCION"]}[Data]
+				in
+				    Datos
+
+	annotation PBI_ResultType = Table
+

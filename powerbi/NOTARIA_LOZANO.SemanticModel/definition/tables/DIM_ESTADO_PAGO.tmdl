@@ -1,0 +1,27 @@
+table DIM_ESTADO_PAGO
+	lineageTag: e72076a0-3c4e-4e55-adf7-334b3c5ea39d
+
+	column ID_Estado_Pago
+		dataType: int64
+		formatString: 0
+		lineageTag: 621cfefc-1fbd-4ce9-ad71-38e22bd5cd97
+		summarizeBy: none
+		sourceColumn: ID_Estado_Pago
+
+	column Estado
+		dataType: string
+		lineageTag: 9a215c34-a470-48b0-8dac-f598f9e84b85
+		summarizeBy: none
+		sourceColumn: Estado
+
+	partition DIM_ESTADO_PAGO = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("localhost\SQLEXPRESS", "DW_NotariaLozano"),
+				    Datos = Origen{[Schema = "dbo", Item = "DIM_ESTADO_PAGO"]}[Data]
+				in
+				    Datos
+
+	annotation PBI_ResultType = Table
+

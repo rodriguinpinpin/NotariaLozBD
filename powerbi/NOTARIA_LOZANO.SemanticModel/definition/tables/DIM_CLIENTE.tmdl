@@ -1,0 +1,51 @@
+table DIM_CLIENTE
+	lineageTag: 43223612-1d35-4f97-9717-306f68472213
+
+	column ID_Cliente
+		dataType: int64
+		formatString: 0
+		lineageTag: 30e8cda6-94a9-4a0a-8f9e-601598153ca1
+		summarizeBy: none
+		sourceColumn: ID_Cliente
+
+	column DNI_RUC
+		dataType: string
+		lineageTag: 1bc8eedb-7bae-42fe-912f-34bdd5d14ce9
+		summarizeBy: none
+		sourceColumn: DNI_RUC
+
+	column Razon_Social_Nombre
+		dataType: string
+		lineageTag: d88e375a-f846-4b5a-86b3-f65eb5ae2b40
+		summarizeBy: none
+		sourceColumn: Razon_Social_Nombre
+
+	column Tipo_Cliente
+		dataType: string
+		lineageTag: d07aec24-7e55-44d2-9c02-8d01d94b0e83
+		summarizeBy: none
+		sourceColumn: Tipo_Cliente
+
+	column Distrito
+		dataType: string
+		lineageTag: 140e5e3d-e111-4416-a0d9-77d135659a46
+		summarizeBy: none
+		sourceColumn: Distrito
+
+	column Segmento
+		dataType: string
+		lineageTag: fdf29745-bdcf-4ed3-96ad-c457ea7ec08a
+		summarizeBy: none
+		sourceColumn: Segmento
+
+	partition DIM_CLIENTE = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("localhost\SQLEXPRESS", "DW_NotariaLozano"),
+				    Datos = Origen{[Schema = "dbo", Item = "DIM_CLIENTE"]}[Data]
+				in
+				    Datos
+
+	annotation PBI_ResultType = Table
+

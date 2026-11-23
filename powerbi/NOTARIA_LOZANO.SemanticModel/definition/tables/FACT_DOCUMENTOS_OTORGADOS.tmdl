@@ -1,0 +1,85 @@
+table FACT_DOCUMENTOS_OTORGADOS
+	lineageTag: 1e2062cb-ab2f-478f-95dd-ee2a36af985a
+
+	column ID_Servicio
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c2e54996-a97e-4afb-819e-019304a3f2be
+		summarizeBy: none
+		sourceColumn: ID_Servicio
+
+	column ID_Personal
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a04c0c79-bc55-4066-ac8c-d1c75bf01b58
+		summarizeBy: none
+		sourceColumn: ID_Personal
+
+	column ID_Tiempo
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 831db02f-d341-4fa7-81d6-3eceb3cbec70
+		summarizeBy: none
+		sourceColumn: ID_Tiempo
+
+	column ID_TipoDocumento
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7c38111f-eba6-405b-b637-41668dfab1ba
+		summarizeBy: none
+		sourceColumn: ID_TipoDocumento
+
+	column ID_Cliente
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7932f3c1-a3c6-44d2-96d4-1f35f3ac2870
+		summarizeBy: none
+		sourceColumn: ID_Cliente
+
+	column Cantidad_Documentos
+		dataType: int64
+		formatString: 0
+		lineageTag: 22474262-9a72-4b3f-8c9e-35a61382bb66
+		summarizeBy: none
+		sourceColumn: Cantidad_Documentos
+
+	column Nro_Tramite
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d4767f2c-a637-42ed-9f50-d881911a3286
+		summarizeBy: none
+		sourceColumn: Nro_Tramite
+
+	column ID_Turno
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b8c3463a-7a10-472e-856e-7fa6ad63b9c7
+		summarizeBy: none
+		sourceColumn: ID_Turno
+
+	column ID_Notario
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b8a7ab7d-a1bb-4829-815b-835ff8b6ad19
+		summarizeBy: none
+		sourceColumn: ID_Notario
+
+	partition FACT_DOCUMENTOS_OTORGADOS = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("localhost\SQLEXPRESS", "DW_NotariaLozano"),
+				    Datos = Origen{[Schema = "dbo", Item = "FACT_DOCUMENTOS_OTORGADOS"]}[Data]
+				in
+				    Datos
+
+	annotation PBI_ResultType = Table
+

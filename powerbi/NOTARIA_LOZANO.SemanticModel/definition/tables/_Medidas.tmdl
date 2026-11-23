@@ -1,0 +1,398 @@
+table _Medidas
+	lineageTag: f19ff6b0-d234-44a6-9f29-29a54d745172
+
+	/// Suma de pagos en estado Pagado (dinero recibido).
+	measure 'Importe cobrado' = SUM(FACT_TRAMITES_FINANCIEROS[Monto_Cobrado])
+		formatString: \S\/\ #,##0.00
+		displayFolder: Finanzas
+		lineageTag: 1a9212d8-67a9-408c-ae4b-a9c25197b696
+
+	/// Importe emitido de trámites no anulados.
+	measure 'Importe facturado' = CALCULATE(SUM(FACT_TRAMITE_GENERAL[Monto_Arancel]), FACT_TRAMITE_GENERAL[Estado_Tramite] <> "Anulado")
+		formatString: \S\/\ #,##0.00
+		displayFolder: Finanzas
+		lineageTag: 08dd1a3d-e1e9-4895-8727-b8781bb8c050
+
+	/// Pagos en estado Pendiente.
+	measure 'Por cobrar' = SUM(FACT_TRAMITES_FINANCIEROS[Monto_Pendiente])
+		formatString: \S\/\ #,##0.00
+		displayFolder: Finanzas
+		lineageTag: 3967a528-595b-45a5-a7b5-b848cfa5c803
+
+	/// Costo (insumos, tasas) del importe cobrado.
+	measure 'Costo asociado' = SUM(FACT_TRAMITES_FINANCIEROS[Costo_Asociado])
+		formatString: \S\/\ #,##0.00
+		displayFolder: Finanzas
+		lineageTag: 13400337-903d-476a-83f8-4d29862af3ae
+
+	/// Importe cobrado menos costo asociado. No es utilidad neta.
+	measure Margen = [Importe cobrado] - [Costo asociado]
+		formatString: \S\/\ #,##0.00
+		displayFolder: Finanzas
+		lineageTag: 4edb28aa-b474-4050-82bd-cf6af4658c95
+
+	measure '% Margen' = DIVIDE([Margen], [Importe cobrado])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Finanzas
+		lineageTag: 3680d5dd-daa6-441c-bf68-9819aaa863ad
+
+	/// Filas del hecho financiero (un pago por fila).
+	measure 'Registros financieros' = COUNTROWS(FACT_TRAMITES_FINANCIEROS)
+		formatString: #,##0
+		displayFolder: Finanzas
+		lineageTag: c1954c8c-25db-4fae-90fa-2fa136d08291
+
+	measure 'Registros con monto' = CALCULATE(COUNTROWS(FACT_TRAMITES_FINANCIEROS), FACT_TRAMITES_FINANCIEROS[Monto_Cobrado] > 0)
+		formatString: #,##0
+		displayFolder: Finanzas
+		lineageTag: 3dc11c6e-4555-48a7-8bbf-a20afbecd3ed
+
+	measure 'Importe medio por registro' = DIVIDE([Importe cobrado], [Registros con monto])
+		formatString: \S\/\ #,##0.00
+		displayFolder: Finanzas
+		lineageTag: 2fe47a05-c50b-4ca5-be93-383f3dea189a
+
+	/// Importe cobrado por trámite con pago.
+	measure 'Ticket medio' = DIVIDE([Importe cobrado], CALCULATE(DISTINCTCOUNT(FACT_TRAMITES_FINANCIEROS[Nro_Tramite]), FACT_TRAMITES_FINANCIEROS[Monto_Cobrado] > 0))
+		formatString: \S\/\ #,##0.00
+		displayFolder: Finanzas
+		lineageTag: 6ca512f4-1552-48b4-b0b5-946e23158fdd
+
+	measure '% Efectivo' = DIVIDE(CALCULATE([Importe cobrado], DIM_METODO_PAGO[Tipo_Pago] = "Efectivo"), [Importe cobrado])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Finanzas
+		lineageTag: 05e0f1ac-a334-45e1-b249-86bab07b3c05
+
+	/// P2: importe cobrado con método Efectivo.
+	measure 'Cobrado en efectivo' = CALCULATE([Importe cobrado], DIM_METODO_PAGO[Tipo_Pago] = "Efectivo")
+		formatString: \S\/\ #,##0.00
+		displayFolder: Finanzas
+		lineageTag: fbe32c8b-dd7c-47ca-9148-cd1f0196a26e
+
+	measure '% Digital' = DIVIDE(CALCULATE([Importe cobrado], DIM_METODO_PAGO[Canal] = "Digital"), [Importe cobrado])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Finanzas
+		lineageTag: 27dc086e-40f4-40fe-8b91-ed155cb33718
+
+	/// Cobrado sobre cobrado + por cobrar.
+	measure '% Cobranza' = DIVIDE([Importe cobrado], [Importe cobrado] + [Por cobrar])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Finanzas
+		lineageTag: 9cabb138-57a3-4ac8-bcc0-f0288265330b
+
+	measure 'Cobrado mes actual' =
+			VAR FechaFin = MAX(DIM_TIEMPO[Fecha_Exacta])
+			VAR FechaIni = MAX(MIN(DIM_TIEMPO[Fecha_Exacta]), DATE(YEAR(FechaFin), MONTH(FechaFin), 1))
+			VAR Actual = CALCULATE([Importe cobrado], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= FechaIni && DIM_TIEMPO[Fecha_Exacta] <= FechaFin))
+			VAR Anterior = CALCULATE([Importe cobrado], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= EDATE(FechaIni, -1) && DIM_TIEMPO[Fecha_Exacta] <= EDATE(FechaFin, -1)))
+			RETURN Actual
+		formatString: \S\/\ #,##0.00
+		displayFolder: Finanzas\Variación
+		lineageTag: 7610c04f-cad0-4bee-930a-239398f68763
+
+	measure 'Cobrado mes anterior' =
+			VAR FechaFin = MAX(DIM_TIEMPO[Fecha_Exacta])
+			VAR FechaIni = MAX(MIN(DIM_TIEMPO[Fecha_Exacta]), DATE(YEAR(FechaFin), MONTH(FechaFin), 1))
+			VAR Actual = CALCULATE([Importe cobrado], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= FechaIni && DIM_TIEMPO[Fecha_Exacta] <= FechaFin))
+			VAR Anterior = CALCULATE([Importe cobrado], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= EDATE(FechaIni, -1) && DIM_TIEMPO[Fecha_Exacta] <= EDATE(FechaFin, -1)))
+			RETURN Anterior
+		formatString: \S\/\ #,##0.00
+		displayFolder: Finanzas\Variación
+		lineageTag: f158e020-4222-41de-9a5b-d5e10142f149
+
+	/// Último mes del contexto (a la fecha) frente a los mismos días del mes anterior.
+	measure 'Variacion mensual cobros' =
+			VAR FechaFin = MAX(DIM_TIEMPO[Fecha_Exacta])
+			VAR FechaIni = MAX(MIN(DIM_TIEMPO[Fecha_Exacta]), DATE(YEAR(FechaFin), MONTH(FechaFin), 1))
+			VAR Actual = CALCULATE([Importe cobrado], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= FechaIni && DIM_TIEMPO[Fecha_Exacta] <= FechaFin))
+			VAR Anterior = CALCULATE([Importe cobrado], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= EDATE(FechaIni, -1) && DIM_TIEMPO[Fecha_Exacta] <= EDATE(FechaFin, -1)))
+			RETURN DIVIDE(Actual - Anterior, Anterior)
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Finanzas\Variación
+		lineageTag: b1b66cb8-442c-4759-a09c-4af678f3f41e
+
+	measure 'Tramites registrados' = DISTINCTCOUNT(FACT_TRAMITE_GENERAL[Nro_Tramite])
+		formatString: #,##0
+		displayFolder: Trámites
+		lineageTag: 243753ac-e25c-404d-93ee-1f1cbe1c6fa7
+
+	measure 'Cantidad de tramites' = SUM(FACT_TRAMITE_GENERAL[Cantidad_Tramites])
+		formatString: #,##0
+		displayFolder: Trámites
+		lineageTag: 1d78c666-aee2-415e-801f-fa40981c6842
+
+	measure 'Pagos registrados' = CALCULATE(COUNTROWS(FACT_TRAMITE_GENERAL), FACT_TRAMITE_GENERAL[Monto_Pagado] > 0)
+		formatString: #,##0
+		displayFolder: Trámites
+		lineageTag: 5b758aa9-bb10-417a-9f0b-5a5a8869c86b
+
+	measure 'Importe pagado tramites' = SUM(FACT_TRAMITE_GENERAL[Monto_Pagado])
+		formatString: \S\/\ #,##0.00
+		displayFolder: Trámites
+		lineageTag: 264126cf-9109-43bb-ad3d-0f7866029501
+
+	/// P4: trámites de la categoría Escrituras públicas.
+	measure 'Tramites escrituras publicas' = CALCULATE([Tramites registrados], DIM_SERVICIO[Categoria] = "Escrituras públicas")
+		formatString: #,##0
+		displayFolder: Trámites
+		lineageTag: 0755b583-a253-46bb-91e5-f94108cd67f1
+
+	measure 'Tramites finalizados' = CALCULATE([Tramites registrados], FACT_TRAMITE_GENERAL[Estado_Tramite] = "Finalizado")
+		formatString: #,##0
+		displayFolder: Trámites
+		lineageTag: dacdf4d5-fca7-46e9-b8d4-914e344ddae0
+
+	measure 'Tramites en proceso' = CALCULATE([Tramites registrados], FACT_TRAMITE_GENERAL[Estado_Tramite] IN {"En Proceso", "Observado"})
+		formatString: #,##0
+		displayFolder: Trámites
+		lineageTag: f40dd435-c681-4492-a04a-9e8b1c305ccb
+
+	/// Finalizados sobre trámites no anulados.
+	measure 'Tasa de finalizacion' = DIVIDE([Tramites finalizados], CALCULATE([Tramites registrados], FACT_TRAMITE_GENERAL[Estado_Tramite] <> "Anulado"))
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Trámites
+		lineageTag: c14ba3a5-596a-4094-8ef9-3b0807eb5fef
+
+	/// Días entre inicio y fin de trámites finalizados.
+	measure 'Dias promedio de duracion' = AVERAGE(FACT_TRAMITE_GENERAL[Dias_Duracion])
+		formatString: #,##0.0
+		displayFolder: Trámites
+		lineageTag: a8f4a88d-66d4-427a-ac3c-9850813c7b4a
+
+	measure 'Tramites mes actual' =
+			VAR FechaFin = MAX(DIM_TIEMPO[Fecha_Exacta])
+			VAR FechaIni = MAX(MIN(DIM_TIEMPO[Fecha_Exacta]), DATE(YEAR(FechaFin), MONTH(FechaFin), 1))
+			VAR Actual = CALCULATE([Tramites registrados], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= FechaIni && DIM_TIEMPO[Fecha_Exacta] <= FechaFin))
+			VAR Anterior = CALCULATE([Tramites registrados], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= EDATE(FechaIni, -1) && DIM_TIEMPO[Fecha_Exacta] <= EDATE(FechaFin, -1)))
+			RETURN Actual
+		formatString: #,##0
+		displayFolder: Trámites
+		lineageTag: bc6bb59a-76d6-4b89-8a0b-99c97c46da19
+
+	measure 'Variacion mensual tramites' =
+			VAR FechaFin = MAX(DIM_TIEMPO[Fecha_Exacta])
+			VAR FechaIni = MAX(MIN(DIM_TIEMPO[Fecha_Exacta]), DATE(YEAR(FechaFin), MONTH(FechaFin), 1))
+			VAR Actual = CALCULATE([Tramites registrados], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= FechaIni && DIM_TIEMPO[Fecha_Exacta] <= FechaFin))
+			VAR Anterior = CALCULATE([Tramites registrados], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= EDATE(FechaIni, -1) && DIM_TIEMPO[Fecha_Exacta] <= EDATE(FechaFin, -1)))
+			RETURN DIVIDE(Actual - Anterior, Anterior)
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Trámites
+		lineageTag: 3824234f-9715-41d1-aa20-1a7b3af72f14
+
+	/// Registros de atención (trámite x etapa).
+	measure 'Atenciones registradas' = COUNTROWS(FACT_TIEMPOS_ATENCION)
+		formatString: #,##0
+		displayFolder: Operaciones
+		lineageTag: ec9a89e5-4c72-4f14-88b3-6e4c0d654118
+
+	measure 'Atencion media minutos' = AVERAGE(FACT_TIEMPOS_ATENCION[Minutos_Totales])
+		formatString: #,##0.0
+		displayFolder: Operaciones
+		lineageTag: 13bf37d1-0775-4ba7-8143-6b980c4814cc
+
+	measure 'Espera media minutos' = AVERAGE(FACT_TIEMPOS_ATENCION[Minutos_Espera])
+		formatString: #,##0.0
+		displayFolder: Operaciones
+		lineageTag: 6b60b2eb-abf5-41d5-b1ef-4ea1af00caeb
+
+	measure 'Proceso medio minutos' = AVERAGE(FACT_TIEMPOS_ATENCION[Minutos_Proceso])
+		formatString: #,##0.0
+		displayFolder: Operaciones
+		lineageTag: e904a2dd-1c1c-4d85-b6cb-124f4ab4161a
+
+	measure 'Atencion minima minutos' = MIN(FACT_TIEMPOS_ATENCION[Minutos_Totales])
+		formatString: #,##0
+		displayFolder: Operaciones
+		lineageTag: 1b08c945-21d8-493b-8323-81eafae851fa
+
+	measure 'Atencion maxima minutos' = MAX(FACT_TIEMPOS_ATENCION[Minutos_Totales])
+		formatString: #,##0
+		displayFolder: Operaciones
+		lineageTag: 5b1cbb12-4a24-4c1f-ac62-e321177c3c38
+
+	measure 'Espera sobre total declarado' = DIVIDE(SUM(FACT_TIEMPOS_ATENCION[Minutos_Espera]), SUM(FACT_TIEMPOS_ATENCION[Minutos_Totales]))
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Operaciones
+		lineageTag: f3bb8488-e541-4fb7-b662-5c2da10d7313
+
+	/// Tiempo total de las 4 etapas por trámite.
+	measure 'Minutos por tramite' = DIVIDE(SUM(FACT_TIEMPOS_ATENCION[Minutos_Totales]), DISTINCTCOUNT(FACT_TIEMPOS_ATENCION[Nro_Tramite]))
+		formatString: #,##0.0
+		displayFolder: Operaciones
+		lineageTag: e2f34312-2966-455a-9381-4d944756d86e
+
+	measure 'Documentos otorgados' = SUM(FACT_DOCUMENTOS_OTORGADOS[Cantidad_Documentos])
+		formatString: #,##0
+		displayFolder: Documentos
+		lineageTag: 12cd6423-0720-4c64-9d66-3d6ad31910d3
+
+	measure 'Tipos documentales atendidos' = CALCULATE(DISTINCTCOUNT(FACT_DOCUMENTOS_OTORGADOS[ID_TipoDocumento]), FACT_DOCUMENTOS_OTORGADOS[Cantidad_Documentos] > 0)
+		formatString: #,##0
+		displayFolder: Documentos
+		lineageTag: 6b74fe5a-de9e-4081-b7dd-697000576469
+
+	measure 'Documentos por tramite' = DIVIDE([Documentos otorgados], DISTINCTCOUNT(FACT_DOCUMENTOS_OTORGADOS[Nro_Tramite]))
+		formatString: #,##0.0
+		displayFolder: Documentos
+		lineageTag: 30a004b0-6b07-47a9-a95e-f7e5d04af54b
+
+	measure 'Documentos mes anterior' =
+			VAR FechaFin = MAX(DIM_TIEMPO[Fecha_Exacta])
+			VAR FechaIni = MAX(MIN(DIM_TIEMPO[Fecha_Exacta]), DATE(YEAR(FechaFin), MONTH(FechaFin), 1))
+			VAR Actual = CALCULATE([Documentos otorgados], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= FechaIni && DIM_TIEMPO[Fecha_Exacta] <= FechaFin))
+			VAR Anterior = CALCULATE([Documentos otorgados], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= EDATE(FechaIni, -1) && DIM_TIEMPO[Fecha_Exacta] <= EDATE(FechaFin, -1)))
+			RETURN Anterior
+		formatString: #,##0
+		displayFolder: Documentos
+		lineageTag: e60caa8f-d04d-4c51-8287-a538bbdc32da
+
+	measure 'Variacion mensual documentos' =
+			VAR FechaFin = MAX(DIM_TIEMPO[Fecha_Exacta])
+			VAR FechaIni = MAX(MIN(DIM_TIEMPO[Fecha_Exacta]), DATE(YEAR(FechaFin), MONTH(FechaFin), 1))
+			VAR Actual = CALCULATE([Documentos otorgados], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= FechaIni && DIM_TIEMPO[Fecha_Exacta] <= FechaFin))
+			VAR Anterior = CALCULATE([Documentos otorgados], FILTER(ALL(DIM_TIEMPO), DIM_TIEMPO[Fecha_Exacta] >= EDATE(FechaIni, -1) && DIM_TIEMPO[Fecha_Exacta] <= EDATE(FechaFin, -1)))
+			RETURN DIVIDE(Actual - Anterior, Anterior)
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Documentos
+		lineageTag: 6cf230b2-22f5-4aa9-95f4-9084774ea0b7
+
+	measure 'Clientes unicos' = DISTINCTCOUNT(FACT_TRAMITE_GENERAL[ID_Cliente])
+		formatString: #,##0
+		displayFolder: Clientes
+		lineageTag: a4d3e6c1-c79f-43dd-9c53-ce615827b183
+
+	/// Clientes con más de un trámite en el contexto.
+	measure 'Clientes recurrentes' = COUNTROWS(FILTER(VALUES(FACT_TRAMITE_GENERAL[ID_Cliente]), CALCULATE([Tramites registrados]) > 1))
+		formatString: #,##0
+		displayFolder: Clientes
+		lineageTag: 017b4a9e-29e8-4ceb-b8ec-0442c3e6cf60
+
+	measure '% Recurrencia' = DIVIDE([Clientes recurrentes], [Clientes unicos])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Clientes
+		lineageTag: 92d8dbf8-cea2-46b2-8be1-c32f78c9c13e
+
+	measure 'Tramites por cliente' = DIVIDE([Tramites registrados], [Clientes unicos])
+		formatString: #,##0.0
+		displayFolder: Clientes
+		lineageTag: 93b9ff8e-fe9b-42f4-a344-602fec31e00e
+
+	measure 'Clientes juridicos' = CALCULATE([Clientes unicos], DIM_CLIENTE[Tipo_Cliente] = "Juridica")
+		formatString: #,##0
+		displayFolder: Clientes
+		lineageTag: c7920d11-07b6-4c94-8730-21295cb0d609
+
+	measure 'Importe por cliente' = DIVIDE([Importe cobrado], [Clientes unicos])
+		formatString: \S\/\ #,##0.00
+		displayFolder: Clientes
+		lineageTag: ffce33fc-a12b-4e66-b8cc-d5beac6dd15c
+
+	measure 'Color variacion cobros' = IF([Variacion mensual cobros] < 0, "#FF8A9C", "#6EE7C4")
+		displayFolder: Visual
+		lineageTag: 08ac20fa-1fda-4dc1-9998-5e7acf5ea89f
+
+	measure 'Color variacion documentos' = IF([Variacion mensual documentos] < 0, "#FF8A9C", "#6EE7C4")
+		displayFolder: Visual
+		lineageTag: f855a123-8702-462e-a126-577a67c06f52
+
+	measure 'Texto variacion cobros' =
+			VAR v = [Variacion mensual cobros]
+			RETURN IF(ISBLANK(v), "Sin mes anterior", IF(v >= 0, "▲ ", "▼ ") & FORMAT(ABS(v), "0.0%") & " vs mes anterior")
+		displayFolder: Visual
+		lineageTag: 9667452d-d065-48e9-b7c8-6a7cb196be74
+
+	measure 'Texto variacion documentos' =
+			VAR v = [Variacion mensual documentos]
+			RETURN IF(ISBLANK(v), "Sin mes anterior", IF(v >= 0, "▲ ", "▼ ") & FORMAT(ABS(v), "0.0%") & " vs mes anterior")
+		displayFolder: Visual
+		lineageTag: 0b4b0e0e-859c-44fc-ae0c-8f53d9f52948
+
+	measure 'Texto periodo' = "Periodo: " & FORMAT(MIN(DIM_TIEMPO[Fecha_Exacta]), "dd mmm yyyy") & " – " & FORMAT(MAX(DIM_TIEMPO[Fecha_Exacta]), "dd mmm yyyy")
+		displayFolder: Visual
+		lineageTag: a49f74bb-adc8-4958-b0b7-d061ae07aa85
+
+	measure 'SVG tendencia cobrado' =
+			VAR T = CALCULATETABLE(ADDCOLUMNS(VALUES(DIM_TIEMPO[Orden_Mes]), "@v", [Importe cobrado] + 0), ALLSELECTED(DIM_TIEMPO), DIM_TIEMPO[Mes_Completo] = TRUE())
+			VAR N = COUNTROWS(T)
+			VAR MinV = MINX(T, [@v])
+			VAR MaxV = MAXX(T, [@v])
+			VAR Pts = CONCATENATEX(T,
+			    VAR i = RANKX(T, DIM_TIEMPO[Orden_Mes], , ASC)
+			    RETURN INT(DIVIDE((i - 1) * 196, N - 1) + 2) & "," & INT(52 - DIVIDE([@v] - MinV, MaxV - MinV) * 44),
+			    " ", DIM_TIEMPO[Orden_Mes], ASC)
+			VAR Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60' preserveAspectRatio='none'>"
+			    & "<polygon fill='%230876AA' fill-opacity='0.14' points='2,58 " & Pts & " 198,58'/>"
+			    & "<polyline fill='none' stroke='%230876AA' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' stroke-dasharray='600' points='" & Pts & "'>"
+			    & "<animate attributeName='stroke-dashoffset' from='600' to='0' dur='1.4s' fill='freeze'/></polyline></svg>"
+			RETURN IF(N > 1, "data:image/svg+xml;utf8," & Svg)
+		displayFolder: Visual
+		lineageTag: 39f8415c-e55e-4ed1-979f-36f88cd901ef
+		dataCategory: ImageUrl
+
+	measure 'SVG tendencia tramites' =
+			VAR T = CALCULATETABLE(ADDCOLUMNS(VALUES(DIM_TIEMPO[Orden_Mes]), "@v", [Tramites registrados] + 0), ALLSELECTED(DIM_TIEMPO), DIM_TIEMPO[Mes_Completo] = TRUE())
+			VAR N = COUNTROWS(T)
+			VAR MinV = MINX(T, [@v])
+			VAR MaxV = MAXX(T, [@v])
+			VAR Pts = CONCATENATEX(T,
+			    VAR i = RANKX(T, DIM_TIEMPO[Orden_Mes], , ASC)
+			    RETURN INT(DIVIDE((i - 1) * 196, N - 1) + 2) & "," & INT(52 - DIVIDE([@v] - MinV, MaxV - MinV) * 44),
+			    " ", DIM_TIEMPO[Orden_Mes], ASC)
+			VAR Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60' preserveAspectRatio='none'>"
+			    & "<polygon fill='%23BE263E' fill-opacity='0.14' points='2,58 " & Pts & " 198,58'/>"
+			    & "<polyline fill='none' stroke='%23BE263E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' stroke-dasharray='600' points='" & Pts & "'>"
+			    & "<animate attributeName='stroke-dashoffset' from='600' to='0' dur='1.4s' fill='freeze'/></polyline></svg>"
+			RETURN IF(N > 1, "data:image/svg+xml;utf8," & Svg)
+		displayFolder: Visual
+		lineageTag: c9930eb5-ca50-4b89-add5-7f9ace130f3f
+		dataCategory: ImageUrl
+
+	measure 'SVG tendencia atencion' =
+			VAR T = CALCULATETABLE(ADDCOLUMNS(VALUES(DIM_TIEMPO[Orden_Mes]), "@v", [Atencion media minutos] + 0), ALLSELECTED(DIM_TIEMPO), DIM_TIEMPO[Mes_Completo] = TRUE())
+			VAR N = COUNTROWS(T)
+			VAR MinV = MINX(T, [@v])
+			VAR MaxV = MAXX(T, [@v])
+			VAR Pts = CONCATENATEX(T,
+			    VAR i = RANKX(T, DIM_TIEMPO[Orden_Mes], , ASC)
+			    RETURN INT(DIVIDE((i - 1) * 196, N - 1) + 2) & "," & INT(52 - DIVIDE([@v] - MinV, MaxV - MinV) * 44),
+			    " ", DIM_TIEMPO[Orden_Mes], ASC)
+			VAR Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60' preserveAspectRatio='none'>"
+			    & "<polygon fill='%23168D9C' fill-opacity='0.14' points='2,58 " & Pts & " 198,58'/>"
+			    & "<polyline fill='none' stroke='%23168D9C' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' stroke-dasharray='600' points='" & Pts & "'>"
+			    & "<animate attributeName='stroke-dashoffset' from='600' to='0' dur='1.4s' fill='freeze'/></polyline></svg>"
+			RETURN IF(N > 1, "data:image/svg+xml;utf8," & Svg)
+		displayFolder: Visual
+		lineageTag: 1379bf64-4013-4445-bd91-2791f3de5467
+		dataCategory: ImageUrl
+
+	measure 'SVG tendencia documentos' =
+			VAR T = CALCULATETABLE(ADDCOLUMNS(VALUES(DIM_TIEMPO[Orden_Mes]), "@v", [Documentos otorgados] + 0), ALLSELECTED(DIM_TIEMPO), DIM_TIEMPO[Mes_Completo] = TRUE())
+			VAR N = COUNTROWS(T)
+			VAR MinV = MINX(T, [@v])
+			VAR MaxV = MAXX(T, [@v])
+			VAR Pts = CONCATENATEX(T,
+			    VAR i = RANKX(T, DIM_TIEMPO[Orden_Mes], , ASC)
+			    RETURN INT(DIVIDE((i - 1) * 196, N - 1) + 2) & "," & INT(52 - DIVIDE([@v] - MinV, MaxV - MinV) * 44),
+			    " ", DIM_TIEMPO[Orden_Mes], ASC)
+			VAR Svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60' preserveAspectRatio='none'>"
+			    & "<polygon fill='%23173D64' fill-opacity='0.14' points='2,58 " & Pts & " 198,58'/>"
+			    & "<polyline fill='none' stroke='%23173D64' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' stroke-dasharray='600' points='" & Pts & "'>"
+			    & "<animate attributeName='stroke-dashoffset' from='600' to='0' dur='1.4s' fill='freeze'/></polyline></svg>"
+			RETURN IF(N > 1, "data:image/svg+xml;utf8," & Svg)
+		displayFolder: Visual
+		lineageTag: 75e1f7a7-193c-4c45-a1c7-91e8cb569134
+		dataCategory: ImageUrl
+
+	column Dummy
+		dataType: string
+		isHidden
+		lineageTag: 8f727e64-f4f7-475c-85df-f1c63ec05706
+		summarizeBy: none
+		sourceColumn: Dummy
+
+	partition _Medidas = m
+		mode: import
+		source = #table(type table [Dummy = text], {})
+
+	annotation PBI_ResultType = Table
+

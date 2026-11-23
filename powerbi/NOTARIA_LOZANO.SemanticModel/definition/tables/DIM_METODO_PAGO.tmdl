@@ -1,0 +1,39 @@
+table DIM_METODO_PAGO
+	lineageTag: a1ecbd22-e54a-46bb-a459-7c30c9b3fe20
+
+	column ID_Metodo
+		dataType: int64
+		formatString: 0
+		lineageTag: 8c108b08-c40b-4586-b318-af0d20a3dc5b
+		summarizeBy: none
+		sourceColumn: ID_Metodo
+
+	column Tipo_Pago
+		dataType: string
+		lineageTag: aea7afe3-dbc5-40fe-86b3-d60959d244e4
+		summarizeBy: none
+		sourceColumn: Tipo_Pago
+
+	column Plataforma
+		dataType: string
+		lineageTag: 843427e3-e22b-4c44-9cb6-a169678bd1df
+		summarizeBy: none
+		sourceColumn: Plataforma
+
+	column Canal
+		dataType: string
+		lineageTag: cfa80aa0-d675-42d6-8d36-6494743ec09b
+		summarizeBy: none
+		sourceColumn: Canal
+
+	partition DIM_METODO_PAGO = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("localhost\SQLEXPRESS", "DW_NotariaLozano"),
+				    Datos = Origen{[Schema = "dbo", Item = "DIM_METODO_PAGO"]}[Data]
+				in
+				    Datos
+
+	annotation PBI_ResultType = Table
+

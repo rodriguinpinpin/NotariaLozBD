@@ -1,0 +1,120 @@
+table FACT_TRAMITE_GENERAL
+	lineageTag: 90bf0682-218a-479f-86e7-4e9701541833
+
+	column Nro_Tramite
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: babb5450-9204-41e1-895e-c475fa804acb
+		summarizeBy: none
+		sourceColumn: Nro_Tramite
+
+	column ID_Tiempo
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 89a1668d-3e4e-4f52-97b3-a65748414533
+		summarizeBy: none
+		sourceColumn: ID_Tiempo
+
+	column ID_Servicio
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 632cc3e0-24b9-4d21-8b79-8d422b8e1525
+		summarizeBy: none
+		sourceColumn: ID_Servicio
+
+	column ID_Notario
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 68d96a09-9968-4a27-bf04-8b7e25c615eb
+		summarizeBy: none
+		sourceColumn: ID_Notario
+
+	column ID_Cliente
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5b3fcef8-802d-44fb-8299-8b94750e9a94
+		summarizeBy: none
+		sourceColumn: ID_Cliente
+
+	column ID_Personal
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0d8aabff-446e-4a36-a278-2226bbd79196
+		summarizeBy: none
+		sourceColumn: ID_Personal
+
+	column ID_Estado_Pago
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a8b870ce-8fa9-4ded-bfc7-6d681d500e18
+		summarizeBy: none
+		sourceColumn: ID_Estado_Pago
+
+	column Monto_Pagado
+		dataType: decimal
+		formatString: #,##0.00
+		lineageTag: d2b98f41-2ea3-4659-9359-2237c1d91ea2
+		summarizeBy: sum
+		sourceColumn: Monto_Pagado
+
+	column Monto_Arancel
+		dataType: decimal
+		formatString: #,##0.00
+		lineageTag: 349d42af-e01c-448f-8e92-253e9e7835a6
+		summarizeBy: sum
+		sourceColumn: Monto_Arancel
+
+	column Cantidad_Tramites
+		dataType: int64
+		formatString: 0
+		lineageTag: 18eb042e-4ea1-4aa7-96fd-e1db4938714d
+		summarizeBy: none
+		sourceColumn: Cantidad_Tramites
+
+	column Estado_Tramite
+		dataType: string
+		lineageTag: 00364817-789d-4143-a541-43d97cf1d5b1
+		summarizeBy: none
+		sourceColumn: Estado_Tramite
+
+	column Dias_Duracion
+		dataType: int64
+		formatString: 0
+		lineageTag: f2116480-6f03-4c5c-961a-adb6d6e6356a
+		summarizeBy: none
+		sourceColumn: Dias_Duracion
+
+	column ID_Turno
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: fa97f4b1-59ae-430b-b546-6a7ee0f1d688
+		summarizeBy: none
+		sourceColumn: ID_Turno
+
+	column ID_Metodo
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: bc2591ac-a4bd-40e4-a0a6-cccdbd08ff69
+		summarizeBy: none
+		sourceColumn: ID_Metodo
+
+	partition FACT_TRAMITE_GENERAL = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("localhost\SQLEXPRESS", "DW_NotariaLozano"),
+				    Datos = Origen{[Schema = "dbo", Item = "FACT_TRAMITE_GENERAL"]}[Data]
+				in
+				    Datos
+
+	annotation PBI_ResultType = Table
+

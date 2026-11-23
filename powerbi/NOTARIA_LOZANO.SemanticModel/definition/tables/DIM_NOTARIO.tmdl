@@ -1,0 +1,39 @@
+table DIM_NOTARIO
+	lineageTag: a9a1a867-fb83-4609-aa2e-71b0f891a4b5
+
+	column ID_Notario
+		dataType: int64
+		formatString: 0
+		lineageTag: 8c8fa6a0-e8f8-421a-b820-f09b781e0dd4
+		summarizeBy: none
+		sourceColumn: ID_Notario
+
+	column Nombre_Completo
+		dataType: string
+		lineageTag: f4d675fe-c20f-4b94-a6e0-e05e157bf2c6
+		summarizeBy: none
+		sourceColumn: Nombre_Completo
+
+	column Colegio_Notarios
+		dataType: string
+		lineageTag: 09147edf-d8ee-41c4-8063-983d0821abdb
+		summarizeBy: none
+		sourceColumn: Colegio_Notarios
+
+	column Rol
+		dataType: string
+		lineageTag: cc293848-0f19-43cf-8f1d-eaf36e171400
+		summarizeBy: none
+		sourceColumn: Rol
+
+	partition DIM_NOTARIO = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("localhost\SQLEXPRESS", "DW_NotariaLozano"),
+				    Datos = Origen{[Schema = "dbo", Item = "DIM_NOTARIO"]}[Data]
+				in
+				    Datos
+
+	annotation PBI_ResultType = Table
+

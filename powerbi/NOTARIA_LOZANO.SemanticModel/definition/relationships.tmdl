@@ -1,0 +1,120 @@
+relationship 2effc3df-4cc3-5ef2-9960-74f2165caf7c
+	fromColumn: FACT_TRAMITES_FINANCIEROS.ID_Cliente
+	toColumn: DIM_CLIENTE.ID_Cliente
+
+relationship a117c976-3166-57a7-a0ab-0e4f7a3a0e13
+	fromColumn: FACT_TRAMITES_FINANCIEROS.ID_Servicio
+	toColumn: DIM_SERVICIO.ID_Servicio
+
+relationship c8945256-408d-536c-8869-c15f8ae4a529
+	fromColumn: FACT_TRAMITES_FINANCIEROS.ID_Tiempo
+	toColumn: DIM_TIEMPO.ID_Tiempo
+
+relationship f6c71f2d-99bf-55ab-a96d-612ffc13e2a8
+	fromColumn: FACT_TRAMITES_FINANCIEROS.ID_Personal
+	toColumn: DIM_PERSONAL.ID_Personal
+
+relationship 1c8450a7-0ba7-51be-9216-a974622346ca
+	fromColumn: FACT_TRAMITES_FINANCIEROS.ID_Metodo
+	toColumn: DIM_METODO_PAGO.ID_Metodo
+
+relationship d6cbba81-abfd-5297-a8b8-8e460af91600
+	fromColumn: FACT_TRAMITES_FINANCIEROS.ID_Estado_Pago
+	toColumn: DIM_ESTADO_PAGO.ID_Estado_Pago
+
+relationship 32ff45cc-7733-5757-b51b-32d7352d1d23
+	fromColumn: FACT_TRAMITES_FINANCIEROS.ID_Turno
+	toColumn: DIM_TURNO.ID_Turno
+
+relationship a83d8b27-6abb-57bd-9276-7613e2076a1c
+	fromColumn: FACT_TRAMITES_FINANCIEROS.ID_Notario
+	toColumn: DIM_NOTARIO.ID_Notario
+
+relationship c9dd01b0-2766-531e-86dc-5ba326cc7108
+	fromColumn: FACT_TIEMPOS_ATENCION.ID_Servicio
+	toColumn: DIM_SERVICIO.ID_Servicio
+
+relationship 0cf22538-392a-5a3e-9e93-41f4ef0fbfe5
+	fromColumn: FACT_TIEMPOS_ATENCION.ID_Personal
+	toColumn: DIM_PERSONAL.ID_Personal
+
+relationship e51504ad-debb-52e5-8402-d8669c2b3b57
+	fromColumn: FACT_TIEMPOS_ATENCION.ID_Tiempo
+	toColumn: DIM_TIEMPO.ID_Tiempo
+
+relationship 5d4ae172-44ba-57df-9780-f237e38bc1c1
+	fromColumn: FACT_TIEMPOS_ATENCION.ID_Etapa
+	toColumn: DIM_ETAPA_TRAMITE.ID_Etapa
+
+relationship e3cf0878-f94c-53e8-a671-ecb0fdf62513
+	fromColumn: FACT_TIEMPOS_ATENCION.ID_Turno
+	toColumn: DIM_TURNO.ID_Turno
+
+relationship fccd9cb5-336f-5197-aad7-9a571f4815e5
+	fromColumn: FACT_TIEMPOS_ATENCION.ID_Cliente
+	toColumn: DIM_CLIENTE.ID_Cliente
+
+relationship 51577bec-1613-572b-8f79-c5356d20448d
+	fromColumn: FACT_TIEMPOS_ATENCION.ID_Notario
+	toColumn: DIM_NOTARIO.ID_Notario
+
+relationship 71f05c57-e655-5d10-9d53-e9d5092cc124
+	fromColumn: FACT_DOCUMENTOS_OTORGADOS.ID_Servicio
+	toColumn: DIM_SERVICIO.ID_Servicio
+
+relationship 50b3ff04-00de-5af4-a024-6cfaacb77b4d
+	fromColumn: FACT_DOCUMENTOS_OTORGADOS.ID_Personal
+	toColumn: DIM_PERSONAL.ID_Personal
+
+relationship f6fa7489-0286-56e1-8881-abf3cef1cc9e
+	fromColumn: FACT_DOCUMENTOS_OTORGADOS.ID_Tiempo
+	toColumn: DIM_TIEMPO.ID_Tiempo
+
+relationship 24184033-498c-586a-95d8-2f56462f7bf4
+	fromColumn: FACT_DOCUMENTOS_OTORGADOS.ID_TipoDocumento
+	toColumn: DIM_TIPO_DOCUMENTO.ID_TipoDocumento
+
+relationship 2e30c525-ccc0-5580-88c3-8792251c7a52
+	fromColumn: FACT_DOCUMENTOS_OTORGADOS.ID_Cliente
+	toColumn: DIM_CLIENTE.ID_Cliente
+
+relationship 1da7d438-ca84-5223-9059-5f9328615b24
+	fromColumn: FACT_DOCUMENTOS_OTORGADOS.ID_Turno
+	toColumn: DIM_TURNO.ID_Turno
+
+relationship 09fc97c2-c4f3-5695-a129-7fd0e8b6484c
+	fromColumn: FACT_DOCUMENTOS_OTORGADOS.ID_Notario
+	toColumn: DIM_NOTARIO.ID_Notario
+
+relationship ad4eb1e4-709a-5850-8d1d-383fc2543fd4
+	fromColumn: FACT_TRAMITE_GENERAL.ID_Tiempo
+	toColumn: DIM_TIEMPO.ID_Tiempo
+
+relationship 23f48fee-2c26-5ff9-a4a9-0f1b4f798572
+	fromColumn: FACT_TRAMITE_GENERAL.ID_Servicio
+	toColumn: DIM_SERVICIO.ID_Servicio
+
+relationship 6e91bfcf-954c-5b43-92e4-64ac1ed8cfab
+	fromColumn: FACT_TRAMITE_GENERAL.ID_Notario
+	toColumn: DIM_NOTARIO.ID_Notario
+
+relationship 2f48fea7-f78b-5137-9a53-84e30bb27f8f
+	fromColumn: FACT_TRAMITE_GENERAL.ID_Cliente
+	toColumn: DIM_CLIENTE.ID_Cliente
+
+relationship 915f1d3c-67df-593a-ad96-3f05d886ca1f
+	fromColumn: FACT_TRAMITE_GENERAL.ID_Personal
+	toColumn: DIM_PERSONAL.ID_Personal
+
+relationship 85287c96-f844-5168-8b71-4219d9b1e2b0
+	fromColumn: FACT_TRAMITE_GENERAL.ID_Estado_Pago
+	toColumn: DIM_ESTADO_PAGO.ID_Estado_Pago
+
+relationship cf4d8fff-dc57-5a4a-b5df-5a044f3054e6
+	fromColumn: FACT_TRAMITE_GENERAL.ID_Turno
+	toColumn: DIM_TURNO.ID_Turno
+
+relationship 6e5b9ab0-c383-5957-ac4e-5303b642ab8c
+	fromColumn: FACT_TRAMITE_GENERAL.ID_Metodo
+	toColumn: DIM_METODO_PAGO.ID_Metodo
+
