@@ -1,0 +1,89 @@
+﻿Indicador;Filtro;Valor
+Importe cobrado;Total;168702.50
+Importe facturado;Total;176818.00
+Por cobrar;Total;8115.50
+Costo asociado;Total;48221.90
+Margen;Total;120480.60
+Tramites registrados;Total;767.00
+Atenciones registradas;Total;3028.00
+Atencion media minutos;Total;30.59
+Espera media minutos;Total;12.75
+Documentos otorgados;Total;1479.00
+Clientes unicos;Total;188.00
+Importe cobrado;Mes=2026-06;23424.25
+Importe facturado;Mes=2026-06;23966.00
+Por cobrar;Mes=2026-06;541.75
+Costo asociado;Mes=2026-06;6492.72
+Margen;Mes=2026-06;16931.53
+Tramites registrados;Mes=2026-06;119.00
+Atenciones registradas;Mes=2026-06;472.00
+Atencion media minutos;Mes=2026-06;29.49
+Espera media minutos;Mes=2026-06;12.57
+Documentos otorgados;Mes=2026-06;211.00
+Clientes unicos;Mes=2026-06;85.00
+Importe cobrado;Mes=2026-07;30444.00
+Importe facturado;Mes=2026-07;31643.50
+Por cobrar;Mes=2026-07;1199.50
+Costo asociado;Mes=2026-07;8071.06
+Margen;Mes=2026-07;22372.94
+Tramites registrados;Mes=2026-07;168.00
+Atenciones registradas;Mes=2026-07;664.00
+Atencion media minutos;Mes=2026-07;28.18
+Espera media minutos;Mes=2026-07;12.23
+Documentos otorgados;Mes=2026-07;337.00
+Clientes unicos;Mes=2026-07;107.00
+Importe cobrado;Mes=2026-08;30029.50
+Importe facturado;Mes=2026-08;30261.00
+Por cobrar;Mes=2026-08;231.50
+Costo asociado;Mes=2026-08;8642.58
+Margen;Mes=2026-08;21386.92
+Tramites registrados;Mes=2026-08;124.00
+Atenciones registradas;Mes=2026-08;488.00
+Atencion media minutos;Mes=2026-08;31.77
+Espera media minutos;Mes=2026-08;12.88
+Documentos otorgados;Mes=2026-08;242.00
+Clientes unicos;Mes=2026-08;87.00
+Importe cobrado;Mes=2026-09;36610.75
+Importe facturado;Mes=2026-09;36914.50
+Por cobrar;Mes=2026-09;303.75
+Costo asociado;Mes=2026-09;11085.41
+Margen;Mes=2026-09;25525.34
+Tramites registrados;Mes=2026-09;131.00
+Atenciones registradas;Mes=2026-09;516.00
+Atencion media minutos;Mes=2026-09;34.73
+Espera media minutos;Mes=2026-09;14.38
+Documentos otorgados;Mes=2026-09;233.00
+Clientes unicos;Mes=2026-09;82.00
+Importe cobrado;Mes=2026-10;30066.50
+Importe facturado;Mes=2026-10;30339.00
+Por cobrar;Mes=2026-10;272.50
+Costo asociado;Mes=2026-10;8622.56
+Margen;Mes=2026-10;21443.94
+Tramites registrados;Mes=2026-10;137.00
+Atenciones registradas;Mes=2026-10;536.00
+Atencion media minutos;Mes=2026-10;30.07
+Espera media minutos;Mes=2026-10;12.53
+Documentos otorgados;Mes=2026-10;286.00
+Clientes unicos;Mes=2026-10;91.00
+Importe cobrado;Mes=2026-11;18127.50
+Importe facturado;Mes=2026-11;23694.00
+Por cobrar;Mes=2026-11;5566.50
+Costo asociado;Mes=2026-11;5307.57
+Margen;Mes=2026-11;12819.93
+Tramites registrados;Mes=2026-11;88.00
+Atenciones registradas;Mes=2026-11;352.00
+Atencion media minutos;Mes=2026-11;29.70
+Espera media minutos;Mes=2026-11;11.77
+Documentos otorgados;Mes=2026-11;170.00
+Clientes unicos;Mes=2026-11;65.00
+P1;Servicio con mayor margen;Compraventa de inmueble|34163.03
+P1;Trimestre con mas tramites;T3 2026|423
+P2;Empleado con mas efectivo;Pedro Salazar Núñez|11374.75
+P3;Metodo preferido Juridica;Transferencia|86
+P3;Metodo preferido Natural;Efectivo|259
+P4;Cargo con mas escrituras publicas;Abogado|182
+P5;Tipo documental con mas documentos;Firma legalizada|456
+P6;Empleado con mas documentos;Ana Lucía Ramos Díaz|229
+P7;Servicio con mayor atencion media;Hipoteca|53.24
+P7;Turno con mayor atencion media;Tarde|34.71
+P8;Etapa con mayor espera media;Revisión y redacción|20.80
